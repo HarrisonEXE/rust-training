@@ -1,7 +1,46 @@
+pub struct LinkedList<T> {
+    head: Link<T>,
+}
+
+impl<T> LinkedList<T> {
+    fn empty() -> Self {
+        LinkedList { head: None}
+    }
+
+    fn push(&mut self, element: T) {
+        let old_head : Option<Box<Node<T>>> = self.head.take();
+        let new_head = Box::new( Node{
+            element,
+            next: old_head,
+        });
+        self.head = Some(new_head);
+    }
+
+    fn pop(&mut self) -> Option<T> {
+        self.head.take().map(|n|{
+            self.head = n.next;
+            n.element
+        })
+    }
+
+    fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|n| &n.element)
+    }
+}
+
+struct Node<T> {
+    element: T,
+    next: Link<T>,
+}
+
+type Link<T> = Option<Box<Node<T>>>;
+
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let mut list: LinkedList<u32> = LinkedList::empty();
+        list.push(73);
     }
 }
